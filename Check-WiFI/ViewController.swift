@@ -2,9 +2,7 @@
 //  ViewController.swift
 //  Check-WiFI
 //
-//  Created by ERU on 2019/06/12.
-//  Copyright © 2019 HackingGate. All rights reserved.
-//
+//  Created by WD on 2022/12/19
 
 import UIKit
 import SystemConfiguration.CaptiveNetwork
@@ -28,6 +26,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
             let status = CLLocationManager.authorizationStatus()
             if status == .authorizedWhenInUse {
                 updateWiFi()
+                print("Standortberechtigung beim Start: authorizedWhenInUse")
             } else {
                 locationManager.delegate = self
                 locationManager.requestWhenInUseAuthorization()
@@ -37,17 +36,46 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         }
     }
     
+    @IBAction func Getinfo(_ sender: Any) {
+        print("Update WIFI")
+        updateWiFi()
+        //getSSID()
+    }
+    
     func updateWiFi() {
-        print("SSID: \(currentNetworkInfos?.first?.ssid ?? "")")
+        print("SSID: \(currentNetworkInfos?.first?.ssid ?? "Could not detect SSID")")
         ssidLabel.text = currentNetworkInfos?.first?.ssid
         bssidLabel.text = currentNetworkInfos?.first?.bssid
     }
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        print("didChangeAuthorization aufgerufen, Status: \(status.rawValue)")
         if status == .authorizedWhenInUse {
+            print("Standortberechtigung: authorizedWhenInUse")
             updateWiFi()
         }
     }
+    @available(iOS 14.0, *)
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        let status = manager.authorizationStatus
+        if status == .authorizedWhenInUse || status == .authorizedAlways {
+            updateWiFi()
+        }
+    }
+    
+//    func getSSID() -> String? {
+//        var ssid: String?
+//        if let interfaces = CNCopySupportedInterfaces() as NSArray? {
+//            for interface in interfaces {
+//                if let interfaceInfo = CNCopyCurrentNetworkInfo(interface as! CFString) as NSDictionary? {
+//                    ssid = interfaceInfo[kCNNetworkInfoKeySSID as String] as? String
+//                    break
+//                }
+//            }
+//        }
+//        print("getSSID: \(ssid ?? "Could not detect SSID")")
+//        return ssid
+//    }
     
 }
 

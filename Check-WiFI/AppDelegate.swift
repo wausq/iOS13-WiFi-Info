@@ -2,9 +2,6 @@
 //  AppDelegate.swift
 //  Check-WiFI
 //
-//  Created by ERU on 2019/06/12.
-//  Copyright © 2019 HackingGate. All rights reserved.
-//
 
 import UIKit
 
